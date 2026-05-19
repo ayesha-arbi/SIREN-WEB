@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { updateDoc, doc } from 'firebase/firestore'
 import { db } from '@/firebase/firebaseConfig'
 import { useSOSSignals } from '@/hooks/userFirestore'
-import { Panel, Btn, Spinner, EmptyState } from '@/components/UI'
-import { useToast } from '@/lib/ToastContext'
+import { Panel, Btn, Spinner, EmptyState } from '@/components/ui/UI'
+import { useToast } from '@/context/ToastContext'
 
 export default function SOSPage() {
   const { signals, loading, refresh } = useSOSSignals()

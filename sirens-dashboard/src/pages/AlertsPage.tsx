@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { callable } from '@/firebase/firebaseConfig'
 import { useAlerts } from '@/hooks/userFirestore'
-import { Panel, Btn, Spinner, EmptyState } from '@/components/UI'
-import { useToast } from '@/lib/ToastContext'
+import { Panel, Btn, Spinner, EmptyState } from '@/components/ui/UI'
+import { useToast } from '@/context/ToastContext'
 
 export default function AlertsPage() {
   const alerts = useAlerts()

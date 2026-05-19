@@ -1,5 +1,5 @@
 import { useReports } from '@/hooks/userFirestore'
-import { Panel, SeverityBadge, Spinner, EmptyState } from '@/components/UI'
+import { Panel, SeverityBadge, Spinner, EmptyState } from '@/components/ui/UI'
 
 export default function IncidentsPage() {
   const { reports, loading } = useReports()

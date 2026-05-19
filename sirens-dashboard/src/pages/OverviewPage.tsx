@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { callable } from '@/lib/firebase'
-import { useCrises, useDangerZones, useSOSSignals, useAlerts, useResolvedCount } from '@/hooks/useFirestore'
-import { Panel, StatCard, SeverityBadge, ConfidenceBar, Btn, LivePill, MapCanvas, ResolveModal, Spinner, EmptyState } from '@/components/UI'
-import { useToast } from '@/lib/ToastContext'
+import { callable } from '@/firebase/firebaseConfig'
+import { useCrises, useDangerZones, useSOSSignals, useAlerts, useResolvedCount } from '@/hooks/userFirestore'
+import { Panel, StatCard, SeverityBadge, ConfidenceBar, Btn, LivePill, MapCanvas, ResolveModal, Spinner, EmptyState } from '@/components/ui/UI'
+import { useToast } from '@/context/ToastContext'
 import type { Page } from '@/types'
 import { Marker, Circle } from '@react-google-maps/api'
 

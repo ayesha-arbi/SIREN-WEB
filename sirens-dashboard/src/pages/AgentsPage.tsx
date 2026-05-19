@@ -1,5 +1,5 @@
 import { useAgentTraces } from '@/hooks/userFirestore'
-import { Panel, StatCard, Spinner, EmptyState } from '@/components/UI'
+import { Panel, StatCard, Spinner, EmptyState } from '@/components/ui/UI'
 
 export default function AgentsPage() {
   const traces = useAgentTraces()

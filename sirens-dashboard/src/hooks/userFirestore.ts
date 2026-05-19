@@ -1,9 +1,18 @@
 import { useEffect, useState, useCallback } from 'react'
 import {
-  collection, onSnapshot, query, where,
-  orderBy, limit, DocumentData, QuerySnapshot
+  collection,
+  onSnapshot,
+  query,
+  where,
+  orderBy,
+  limit,
 } from 'firebase/firestore'
-import { db, callable } from '@/lib/firebase'
+
+import type {
+  DocumentData,
+  QuerySnapshot,
+} from 'firebase/firestore'
+import { db, callable } from '@/firebase/firebaseConfig'
 import type { Crisis, DangerZone, Resource, Alert, VerificationRequest, AgentTrace, SOSSignal, Report } from '@/types'
 
 // ─── helper: map snapshot to typed array ─────────────────────────────────────
