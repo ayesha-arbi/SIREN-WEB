@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useAuth } from '@/context/AuthContext'
 
 export default function TopNav() {
+  const { user, logout } = useAuth()
   const [time, setTime] = useState('')
+
   useEffect(() => {
     const tick = () => setTime(new Date().toLocaleTimeString('en-GB'))
     tick()
@@ -27,7 +30,18 @@ export default function TopNav() {
       </div>
       <div className="nav-auth">
         <div className="auth-avatar">AC</div>
-        <div className="auth-name">Authority Command</div>
+        <div className="auth-name">{user?.email ?? 'Authority Command'}</div>
+        <button
+          onClick={logout}
+          style={{
+            marginLeft: '0.75rem', background: 'transparent',
+            border: '1px solid #1E2D4A', borderRadius: 6,
+            color: '#9CA3AF', fontSize: '0.7rem', padding: '4px 10px',
+            cursor: 'pointer', letterSpacing: 1,
+          }}
+        >
+          LOGOUT
+        </button>
       </div>
     </nav>
   )

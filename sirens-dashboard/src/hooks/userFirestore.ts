@@ -92,37 +92,55 @@ export function useAgentTraces(maxLines = 80) {
 }
 
 // ─── useSOSSignals ────────────────────────────────────────────────────────────
+// ─── useSOSSignals ────────────────────────────────────────────────────────────
 export function useSOSSignals() {
   const [signals, setSignals] = useState<SOSSignal[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const refresh = useCallback(async () => {
-    setLoading(true)
-    try {
-      const res = await callable.getSOSList()
-      setSignals(res.data.signals)
-    } catch (e) {
-      console.error('getSOSList error', e)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  // Also subscribe to sos_signals for real-time flashing indicators
+  // Primary: real-time Firestore listener
   useEffect(() => {
     const q = query(
       collection(db, 'sos_signals'),
       where('status', '==', 'pending'),
       orderBy('timestamp', 'desc')
     )
-    const unsub = onSnapshot(q, s => {
-      setSignals(snap<SOSSignal>(s))
-      setLoading(false)
-    })
+    const unsub = onSnapshot(
+      q,
+      s => {
+        setSignals(snap<SOSSignal>(s))
+        setLoading(false)
+        setError(null)
+      },
+      err => {
+        console.error('sos_signals listener error', err)
+        setError(err.message)
+        setLoading(false)
+        // Firestore failed — fall back to callable
+        fallbackToCallable()
+      }
+    )
     return unsub
   }, [])
 
-  return { signals, loading, refresh }
+  // Fallback: callable used only when Firestore listener fails
+  const fallbackToCallable = useCallback(async () => {
+    try {
+      const res = await callable.getSOSList()
+      setSignals(res.data.signals)
+    } catch (e) {
+      console.error('getSOSList callable error', e)
+    }
+  }, [])
+
+  // Manual refresh always uses callable (e.g. pull-to-refresh)
+  const refresh = useCallback(async () => {
+    setLoading(true)
+    await fallbackToCallable()
+    setLoading(false)
+  }, [fallbackToCallable])
+
+  return { signals, loading, error, refresh }
 }
 
 // ─── useReports ───────────────────────────────────────────────────────────────

@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-ro
 
 import Sidebar from './components/layout/Sidebar'
 import TopNav from './components/layout/TopNav'
-
+import MapPage from './pages/MapPage';
 import OverviewPage from './pages/OverviewPage'
 import CrisisPage from './pages/CrisisPage'
 import AgentTerminalPage from './pages/AgentTerminalPage'
@@ -10,12 +10,15 @@ import SOSPage from './pages/SOSPage'
 import AlertsPage from './pages/AlertsPage'
 import IncidentsPage from './pages/IncidentsPage'
 import AgentsPage from './pages/AgentsPage'
+import LoginPage from './pages/LoginPage'           // ← new
+import { AuthProvider, useAuth } from './context/AuthContext' // ← new
 import { useCrises, useSOSSignals } from './hooks/userFirestore'
 import type { Page } from './types'
 
 function AppContent() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { user, loading } = useAuth()              // ← new
   const { crises } = useCrises()
   const { signals } = useSOSSignals()
 
@@ -27,7 +30,7 @@ function AppContent() {
     '/alerts': 'alerts',
     '/incidents': 'incidents',
     '/agents': 'agents',
-    '/terminal': 'terminal'
+    '/terminal': 'terminal',
   }
 
   const currentPage = pathMap[location.pathname] || 'overview'
@@ -36,6 +39,15 @@ function AppContent() {
     const path = page === 'overview' ? '/' : `/${page === 'crises' ? 'crisis' : page}`
     navigate(path)
   }
+
+  if (loading) return (                            // ← new: wait for auth state
+    <div style={{ minHeight: '100vh', background: '#070C1E', display: 'flex',
+      alignItems: 'center', justifyContent: 'center', color: '#fff', letterSpacing: 3 }}>
+      LOADING…
+    </div>
+  )
+
+  if (!user) return <LoginPage />                  // ← new: gate everything behind login
 
   return (
     <div className="flex h-screen bg-[#070C1E] text-white">
@@ -56,8 +68,7 @@ function AppContent() {
             <Route path="/alerts" element={<AlertsPage />} />
             <Route path="/incidents" element={<IncidentsPage />} />
             <Route path="/agents" element={<AgentsPage />} />
-            <Route path="/map" element={<div className="page active">Map Page (Coming Soon)</div>} />
-          </Routes>
+<Route path="/map" element={<MapPage />} />          </Routes>
         </main>
       </div>
     </div>
@@ -66,9 +77,11 @@ function AppContent() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+    <AuthProvider>                                 {/* ← new */}
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 

@@ -4,14 +4,14 @@ import { getFirestore } from 'firebase/firestore'
 import { getFunctions, httpsCallable } from 'firebase/functions'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCCkG0Blnh2BGus-XiJQWCT1e1H8LUdNlU',
-  authDomain: 'sirens-451958.firebaseapp.com',
-  projectId: 'sirens-451958',
-  storageBucket: 'sirens-451958.firebasestorage.app',
-  messagingSenderId: '895118049933',
-  appId: '1:895118049933:web:e3d209ff15c3e4e0b218c4',
-  measurementId: 'G-JEVD5LW08Q',
-}
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+};
 
 export const app  = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
