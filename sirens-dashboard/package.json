@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-google-maps/api": "^2.20.8",
     "@tailwindcss/vite": "^4.3.0",
+    "expo": "^55.0.25",
     "firebase": "^12.13.0",
     "framer-motion": "^12.39.0",
     "lucide-react": "^1.16.0",
