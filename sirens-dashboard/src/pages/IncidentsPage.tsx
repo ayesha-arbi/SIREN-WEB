@@ -1,5 +1,6 @@
 import { useReports } from '@/hooks/userFirestore'
-import { Panel, SeverityBadge, Spinner, EmptyState } from '@/components/ui/UI'
+import { Panel, SeverityBadge, Spinner, EmptyState, Btn } from '@/components/ui/UI'
+import { callable } from '@/firebase/firebaseConfig'
 
 export default function IncidentsPage() {
   const { reports, loading } = useReports()
@@ -26,6 +27,23 @@ export default function IncidentsPage() {
                   User: {r.userId} · Status: {r.status.toUpperCase()}
                 </div>
               </div>
+              {r.status === 'active' && (
+                <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+                  <Btn 
+                    variant="success" 
+                    size="sm" 
+                    onClick={async () => {
+                      try {
+                        await callable.resolveReport({ reportId: r.id })
+                      } catch (e) {
+                        console.error('Failed to resolve report', e)
+                      }
+                    }}
+                  >
+                    Mark as Handled
+                  </Btn>
+                </div>
+              )}
             </div>
           ))}
         </div>
