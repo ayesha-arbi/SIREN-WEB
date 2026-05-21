@@ -79,8 +79,6 @@ export default function OverviewPage({ onNavigate }: Props) {
              {alerts.length === 0 && <EmptyState icon="📡" msg="No active alerts" />}
              {alerts.slice(0, 7).map(a => {
                const poll = a.pollId ? polls.find(p => p.id === a.pollId) : null
-               const totalVotes = poll ? poll.yesVotes + poll.noVotes : 0
-               const yesPercent = totalVotes > 0 ? Math.round((poll!.yesVotes / totalVotes) * 100) : 0
                return (
                  <div key={a.id} className="feed-item">
                    <div className="feed-dot" style={{ background: a.severity === 'high' ? 'var(--red-hot)' : a.severity === 'medium' ? 'var(--orange)' : 'var(--green-ok)' }} />

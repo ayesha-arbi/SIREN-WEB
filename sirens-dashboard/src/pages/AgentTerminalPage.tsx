@@ -1,5 +1,5 @@
 import { useAgentTraces } from '@/hooks/userFirestore'
-import { Panel, Spinner, EmptyState, Btn } from '@/components/ui/UI'
+import { Panel, EmptyState, Btn } from '@/components/ui/UI'
 
 export default function AgentTerminalPage() {
   const traces = useAgentTraces()
@@ -26,7 +26,7 @@ export default function AgentTerminalPage() {
           color: '#a0aebf'
         }}>
           {traces.length === 0 && <EmptyState icon="🤖" msg="No agent traces available" />}
-          {traces.map((t, i) => (
+          {traces.map((t, _i) => (
             <div key={t.id} style={{ marginBottom: '20px', borderLeft: '2px solid var(--accent-cyan)', paddingLeft: '12px' }}>
               <div style={{ color: 'var(--accent-cyan)', fontWeight: 'bold', fontSize: '0.75rem', marginBottom: '4px' }}>
                 [{t.timestamp?.toDate().toLocaleTimeString() ?? 'NOW'}] AGENT: {t.agent}

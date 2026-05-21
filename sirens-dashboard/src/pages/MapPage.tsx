@@ -1,9 +1,10 @@
+/// <reference types="@types/google.maps" />
 import { useEffect, useRef, useState } from 'react'
 import { useCrises, useDangerZones, useSOSSignals, useResources } from '@/hooks/userFirestore'
 
 declare global {
   interface Window {
-    google: typeof google
+    google: typeof globalThis.google
     initMap: () => void
   }
 }

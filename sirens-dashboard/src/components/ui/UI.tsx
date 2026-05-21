@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef, useState, useEffect } from 'react'
+import React, { type ReactNode, useRef, useState, useEffect } from 'react'
 import type { Crisis } from '@/types'
 
 // ─── Panel ────────────────────────────────────────────────────────────────────

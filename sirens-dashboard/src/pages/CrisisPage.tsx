@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { callable } from '@/firebase/firebaseConfig'
 import { useCrises } from '@/hooks/userFirestore'
-import { Panel, SeverityBadge, ConfidenceBar, Btn, Spinner, EmptyState, ResolveModal, DeactivateModal } from '@/components/ui/UI'
 import { useToast } from '@/context/ToastContext'
+import { SeverityBadge, ConfidenceBar, Btn, Spinner, EmptyState, ResolveModal, DeactivateModal } from '@/components/ui/UI'
+
 
 export default function CrisesPage() {
   const { crises, loading } = useCrises()

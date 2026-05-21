@@ -8,6 +8,8 @@
       "path": "./tsconfig.node.json"
     }
   ],
-  "compilerOptions": {},
+  "compilerOptions": {
+    "types": ["google.maps","vite/client"]
+  },
   "extends": "expo/tsconfig.base"
 }
