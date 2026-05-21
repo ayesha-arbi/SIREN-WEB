@@ -57,11 +57,21 @@ export default function OverviewPage({ onNavigate }: Props) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 0.55fr', gap: '1rem', marginBottom: 20 }}>
         <Panel title="Live Situational Map" icon="◈" actions={<LivePill />} noPad>
           <MapCanvas height={380}>
-            <div className="map-info">
-              <div className="map-info-title">🗺 DANGER ZONES</div>
-              {zones.length === 0 && <div style={{ color: 'var(--green-ok)', fontSize: '0.65rem' }}>No active zones</div>}
-            </div>
-          </MapCanvas>
+  <div className="map-info">
+    <div className="map-info-title">🗺 DANGER ZONES</div>
+    {zones.slice(0, 3).map(z => (
+      <div key={z.id} className="map-info-row">
+        <span>{z.crisisId ?? z.id.slice(0, 8)}</span>
+        <span className="map-info-val">{z.radiusKm} km</span>
+      </div>
+    ))}
+    {zones.length === 0 && <div style={{ color: 'var(--green-ok)', fontSize: '0.65rem' }}>No active zones</div>}
+  </div>
+  <div className="map-legend">
+    <div className="legend-item"><div className="legend-dot" style={{ background: 'rgba(255,45,85,0.6)' }} /> Danger Zone</div>
+    <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--red-hot)' }} /> SOS Signal</div>
+  </div>
+</MapCanvas>
         </Panel>
 
 <Panel title="Live Alerts Feed" icon="📡" actions={<span className="badge badge-active">STREAMING</span>} noPad>

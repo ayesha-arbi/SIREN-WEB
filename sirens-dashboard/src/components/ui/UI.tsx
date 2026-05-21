@@ -1,5 +1,4 @@
-import React, { ReactNode } from 'react'
-import { GoogleMap, useJsApiLoader, Marker, Circle } from '@react-google-maps/api'
+import React, { ReactNode, useRef, useState, useEffect } from 'react'
 import type { Crisis } from '@/types'
 
 // ─── Panel ────────────────────────────────────────────────────────────────────
@@ -146,53 +145,68 @@ export function ConfidenceBar({ score, severity }: { score: number; severity: Cr
   )
 }
 
-// ─── Map canvas (Real Google Maps) ────────────────────────────────────────────
-interface MapProps { 
-  height?: number; 
-  children?: ReactNode 
+// ─── Singleton map loader (outside component, never re-runs) ──────────────────
+let googleMapsLoaded = false
+let googleMapsLoading = false
+const loadListeners: (() => void)[] = []
+
+function loadGoogleMaps(apiKey: string): Promise<void> {
+  return new Promise((resolve) => {
+    if (googleMapsLoaded) { resolve(); return }
+    loadListeners.push(resolve)
+    if (googleMapsLoading) return
+    googleMapsLoading = true
+    const s = document.createElement('script')
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`
+    s.onload = () => {
+      googleMapsLoaded = true
+      loadListeners.forEach(fn => fn())
+      loadListeners.length = 0
+    }
+    document.head.appendChild(s)
+  })
+}
+
+// ─── Map canvas ───────────────────────────────────────────────────────────────
+interface MapProps {
+  height?: number
+  children?: ReactNode
 }
 
 export function MapCanvas({ height = 380, children }: MapProps) {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY'
-  })
+  const mapRef = useRef<HTMLDivElement>(null)
+  const mapObj = useRef<google.maps.Map | null>(null)
+  const [ready, setReady] = useState(googleMapsLoaded)
 
-  const center = { lat: 24.8607, lng: 67.0011 } // Karachi center
+  useEffect(() => {
+    const key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''
+    loadGoogleMaps(key).then(() => setReady(true))
+  }, [])
+
+  useEffect(() => {
+    if (!ready || !mapRef.current || mapObj.current) return
+    mapObj.current = new window.google.maps.Map(mapRef.current, {
+      center: { lat: 24.8607, lng: 67.0011 },
+      zoom: 12,
+      streetViewControl: false,
+      mapTypeControl: false,
+      fullscreenControl: false,
+      styles: [
+        { featureType: 'all', elementType: 'geometry', stylers: [{ color: '#1a1a2e' }] },
+        { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0f0f1a' }] },
+      ],
+    })
+  }, [ready])
 
   return (
     <div className="map-container" style={{ height, position: 'relative' }}>
-      {isLoaded ? (
-        <GoogleMap
-          mapContainerStyle={{ width: '100%', height: '100%' }}
-          center={center}
-          zoom={12}
-          options={{
-            streetViewControl: false,
-            mapTypeControl: false,
-            fullscreenControl: false,
-            styles: [
-              {
-                "featureType": "all",
-                "elementType": "geometry",
-                "color": "#1a1a2e"
-              },
-              {
-                "featureType": "water",
-                "elementType": "geometry",
-                "color": "#0f0f1a"
-              }
-            ]
-          }}
-        >
-          {/* You can map over Markers or Circles using children here */}
-          {children}
-        </GoogleMap>
-      ) : (
-        <div className="map-loading" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-panel)' }}>
+      {!ready && (
+        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-panel)' }}>
           <Spinner />
         </div>
       )}
+      <div ref={mapRef} style={{ width: '100%', height: '100%', display: ready ? 'block' : 'none' }} />
+      {ready && children}
     </div>
   )
 }
